@@ -1,0 +1,182 @@
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> Document</title>
+    <style>
+        *{
+            padding: 0px;
+            margin: 0px;
+        }
+        .container{
+            width: 600px;
+            height: 600px;
+            border: 1px solid rgb(54, 107, 67);
+            margin: 0 auto;
+        }
+        .container .block{
+            width: 60px;
+            height: 60px;
+            background-color: slateblue;
+            float: left;
+            border:1px solid rgb(0, 225, 255);
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .container .lei{
+           /* background:url('123.jpg') no-repeat center center/100% 100%;*/
+
+        }
+        .container .show{
+            background:url('123.jpg') no-repeat center center/100% 100%;
+
+        }
+        .container .number{
+            background-color: #fff;
+            text-align: center;
+            line-height: 60px;
+        }
+        .container .biaoji{
+            background:url('111.jpg') no-repeat center center/100% 100%;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        
+    </div>
+</body>
+<script>
+
+    let container = document.querySelector(".container");
+
+    for(let i = 0 ;i < 10; i++){
+
+        for(let j = 0 ;j < 10;j++){
+
+                let divObj = document.createElement("div");
+                
+                divObj.classList.add('block');
+                divObj.id = "a"+i+"_"+j;
+                
+                container.appendChild(divObj);
+        }
+    }
+    //随即放入地雷 获取所有盒子的个数
+    let count = 10;
+
+    let block = document.querySelectorAll(".block");
+
+    do{
+
+        let random = Math.floor(Math.random()*block.length);
+        block[random].classList.add("lei");
+
+    }while(document.querySelectorAll(".lei").length<count);
+
+    block.forEach(function(item){
+        
+        item.onclick=function(){
+            
+            leftClick(item);
+            
+        }
+
+        item.oncontextmenu = function(e){
+
+            e.preventDefault();
+            
+            rightClick(item);
+        }
+    });
+
+    function rightClick(obj){
+        
+        //对是否可以标记旗子的判断
+        if (!obj.classList.contains("number")){
+         //标记旗子  
+            obj.classList.toggle("biaoji");
+        };    
+        
+        let biaoji = document.querySelectorAll(".biaoji.lei");
+        let biaoji2 = document.querySelectorAll(".biaoji");
+
+        if (biaoji.length == count && biaoji2.length == count){
+        //判断扫雷是否成功    
+            alert ("你赢了！");
+        };
+    
+    }
+    
+    
+    
+    function leftClick(obj){
+        
+        
+        if (obj.classList.contains("biaoji")){
+            return "";
+        };
+        
+        
+        if(obj.classList.contains("lei")){
+
+            alert ("Game over");
+
+            let lei = document.querySelectorAll(".lei");
+        
+            lei.forEach(function(item){
+                item.classList.add("show");
+            });
+        
+            return "";
+
+        };
+        
+        obj.classList.add("number");
+
+            let ids = obj.id;
+            let arr = ids.split("_");
+            
+            
+            let x = Number(arr[0].substr(1));
+            let y = Number(arr[1]);
+
+
+        let num = 0;
+        for(let i = x-1;i<=x+1;i++){
+            for(let j = y-1;j<=y+1;j++){
+
+                let objs = document.querySelector(`#a${i}_${j}`);
+            
+                if (objs && objs.classList.contains("lei")){
+
+                    num++;
+                };
+            }
+            
+        }
+        if (num) {
+            obj.innerHTML = num;
+        };
+       
+        if (num == 0){
+            for (let i = x-1;i<=x+1;i++){
+
+                for (let j = y-1;j<=y+1;j++){
+
+                    let objs = document.querySelector(`#a${i}_${j}`);  
+                
+                    
+                    if (objs && !objs.classList.contains("number")){
+                        leftClick(objs);
+                    };
+                
+                }
+            }
+        };
+
+    }        
+
+</script>
+</html>
